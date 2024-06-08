@@ -85,6 +85,72 @@ class Tree {
     }
     return value;
   }
+
+  find(value, root = this.root) {
+    let node;
+    if (root == null) return null;
+
+    if (value < root.value) {
+      node = this.find(value, root.left);
+    } else if (value > root.value) {
+      node = this.find(value, root.right);
+    } else {
+      return root;
+    }
+
+    return node;
+  }
+
+  levelOrder(callback, root = this.root) {
+    let arr = [];
+    if (root == null) return;
+    let q = [root]; //use  an array as a queue
+    while (q.length > 0) {
+      let current = q[0];
+      if (callback) {
+        callback(current);
+      }
+      if (current.left) q.push(current.left);
+      if (current.right) q.push(current.right);
+      arr.push(current.value);
+      q.shift(); // remove the first element
+    }
+    return arr;
+  }
+
+  inOrder(root = this.root, callback, arr = []) {
+    if (root == null) return; //base condition
+
+    this.inOrder(root.left, callback, arr);
+    if (callback) callback(root.value);
+    else arr.push(root.value);
+    this.inOrder(root.right, callback, arr);
+
+    if (!callback) return arr;
+  }
+
+  preOrder(root = this.root, callback, arr = []) {
+    if (root == null) return; //base condition
+
+    if (callback) callback(root.value);
+    else arr.push(root.value);
+    this.preOrder(root.left, callback, arr);
+    this.preOrder(root.right, callback, arr);
+
+    if (!callback) return arr;
+  }
+
+  postOrder(root = this.root, callback, arr = []) {
+    if (root == null) return; //base condition
+
+    this.preOrder(root.left, callback, arr);
+    this.preOrder(root.right, callback, arr);
+
+    if (callback) callback(root.value);
+    else arr.push(root.value);
+
+    if (!callback) return arr;
+  }
 }
 
 const test = [1, 7, 4, 23, 8, 3, 9, 4, 5, 7, 9, 67, 6345, 324];
@@ -94,3 +160,9 @@ balancedTree.insert(6);
 prettyPrint(balancedTree.root);
 balancedTree.deleteItem(4);
 prettyPrint(balancedTree.root);
+console.log(balancedTree.find(67));
+console.log(balancedTree.find(2));
+console.log(balancedTree.levelOrder());
+console.log(balancedTree.inOrder());
+console.log(balancedTree.preOrder());
+console.log(balancedTree.postOrder());
