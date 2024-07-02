@@ -151,6 +151,35 @@ class Tree {
 
     if (!callback) return arr;
   }
+
+  height(root = this.root) {
+    if (root == null) return 0;
+
+    let leftHeight = this.height(root.left);
+    let rightHeight = this.height(root.right);
+
+    if (leftHeight > rightHeight) return leftHeight + 1;
+    else return rightHeight + 1;
+  }
+
+  depth(value, root = this.root) {
+    if (root == null) return -1; //if not found
+
+    let distance = -1;
+
+    if (root.value === value) return distance + 1; //check node
+
+    distance = this.depth(value, root.left); //check left subtree
+    if (distance >= 0) return distance + 1; //check if it was found
+    distance = this.depth(value, root.right); //check right
+    if (distance >= 0) return distance + 1; //check if it was found
+
+    return distance;
+  }
+
+  get() {
+    return this.root;
+  }
 }
 
 const test = [1, 7, 4, 23, 8, 3, 9, 4, 5, 7, 9, 67, 6345, 324];
@@ -166,3 +195,6 @@ console.log(balancedTree.levelOrder());
 console.log(balancedTree.inOrder());
 console.log(balancedTree.preOrder());
 console.log(balancedTree.postOrder());
+console.log(balancedTree.height());
+console.log(balancedTree.depth(1));
+console.log(balancedTree.isBalanced());
