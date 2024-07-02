@@ -25,19 +25,19 @@ class Tree {
     let orderedArr = mergeSort(arr);
     orderedArr = removeDuplicates(orderedArr);
 
-    function toBBST(array, start, end) {
-      if (start > end) return null;
+    return this.toBBST(orderedArr, 0, orderedArr.length - 1);
+  }
 
-      let mid = parseInt((start + end) / 2);
-      let node = new Node(array[mid]);
+  toBBST(array, start, end) {
+    if (start > end) return null;
 
-      node.left = toBBST(array, start, mid - 1);
-      node.right = toBBST(array, mid + 1, end);
+    let mid = parseInt((start + end) / 2);
+    let node = new Node(array[mid]);
 
-      return node;
-    }
+    node.left = this.toBBST(array, start, mid - 1);
+    node.right = this.toBBST(array, mid + 1, end);
 
-    return toBBST(orderedArr, 0, orderedArr.length - 1);
+    return node;
   }
 
   insert(value, root = this.root) {
@@ -158,8 +158,7 @@ class Tree {
     let leftHeight = this.height(root.left);
     let rightHeight = this.height(root.right);
 
-    if (leftHeight > rightHeight) return leftHeight + 1;
-    else return rightHeight + 1;
+    return Math.max(leftHeight, rightHeight) + 1;
   }
 
   depth(value, root = this.root) {
@@ -180,6 +179,29 @@ class Tree {
   get() {
     return this.root;
   }
+
+  isBalanced(root = this.root) {
+    if (root == null) return 0;
+
+    //check left subtree
+    let leftHeight = this.isBalanced(root.left);
+    if (leftHeight == -1) return -1;
+    //if the left subtree is not balanced the entire tree is not balanced, return -1
+
+    //check right subtree
+    let rightHeight = this.isBalanced(root.right);
+    if (rightHeight == -1) return -1;
+
+    // check the diference of the left and right subtrees
+    if (leftHeight - rightHeight > 1) return -1;
+
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  rebalance(root = this.root) {
+    let orderedArr = this.inOrder();
+    this.root = this.toBBST(orderedArr, 0, orderedArr.length - 1);
+  }
 }
 
 const test = [1, 7, 4, 23, 8, 3, 9, 4, 5, 7, 9, 67, 6345, 324];
@@ -198,3 +220,11 @@ console.log(balancedTree.postOrder());
 console.log(balancedTree.height());
 console.log(balancedTree.depth(1));
 console.log(balancedTree.isBalanced());
+balancedTree.insert(100);
+balancedTree.insert(101);
+balancedTree.insert(110);
+console.log(balancedTree.isBalanced());
+prettyPrint(balancedTree.root);
+balancedTree.rebalance();
+console.log(balancedTree.isBalanced());
+prettyPrint(balancedTree.root);
